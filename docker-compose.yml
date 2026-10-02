@@ -1,0 +1,18 @@
+services:
+  sentinel:
+    build: .
+    container_name: sentinel
+    ports:
+      - "8000:8000"               # dashboard
+    env_file:
+      - .env                      # secrets only; see .env.example
+    volumes:
+      - ./config/automations.yaml:/app/config/automations.yaml:ro
+      - sentinel-state:/app/state
+      - ./reports:/app/reports
+      # Read-only auth log mount for auth_watch (host path may differ):
+      - /var/log/auth.log:/host/auth.log:ro
+    restart: unless-stopped
+
+volumes:
+  sentinel-state:
