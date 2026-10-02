@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% set active='findings' %}
+{% block title %}— Finding{% endblock %}
+{% block content %}
+<p><a href="/findings">← all findings</a></p>
+<h1><span class="badge sev-{{ f.severity }}">{{ f.severity }}</span> {{ f.title }}</h1>
+<p class="muted mono">{{ f.automation }} · run {{ f.run_id }} · {{ f.observed_at }}</p>
+<h2>What happened</h2>
+<p>{{ f.description }}</p>
+<h2>Evidence</h2>
+<pre class="evidence">{{ f.evidence_pretty }}</pre>
+<h2>Recommendation</h2>
+<p class="rec">{{ f.recommendation }}</p>
+{% endblock %}
