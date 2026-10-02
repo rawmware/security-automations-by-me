@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% set active='findings' %}
+{% block title %}— Findings{% endblock %}
+{% block content %}
+<h1>Findings</h1>
+<form class="filters" method="get">
+  <select name="severity"><option value="">All severities</option>
+    {% for s in severities %}<option value="{{s}}" {% if s==f_severity %}selected{% endif %}>{{s}}</option>{% endfor %}
+  </select>
+  <select name="automation"><option value="">All automations</option>
+    {% for a in automations %}<option value="{{a}}" {% if a==f_automation %}selected{% endif %}>{{a}}</option>{% endfor %}
+  </select>
+  <input name="q" placeholder="Search…" value="{{ f_q }}">
+  <button type="submit">Filter</button>
+</form>
+<table>
+  <tr><th>Severity</th><th>Finding</th><th>Automation</th><th>Run</th><th>Observed</th></tr>
+  {% for f in findings %}
+  <tr>
+    <td><span class="badge sev-{{ f.severity }}">{{ f.severity }}</span></td>
+    <td><a href="/findings/{{ f.id }}">{{ f.title }}</a></td>
+    <td class="mono">{{ f.automation }}</td>
+    <td class="mono muted">{{ f.run_id }}</td>
+    <td class="muted">{{ f.observed_at[:19] }}</td>
+  </tr>
+  {% else %}
+  <tr><td colspan="5" class="muted">No findings match.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}
