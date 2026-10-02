@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sentinel {% block title %}{% endblock %}</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="pulse"></span> SENTINEL <span class="sub">secops</span></div>
+  <nav>
+    <a href="/" class="{% if active=='dash' %}on{% endif %}">Dashboard</a>
+    <a href="/findings" class="{% if active=='findings' %}on{% endif %}">Findings</a>
+    <a href="/automations" class="{% if active=='autos' %}on{% endif %}">Automations</a>
+    <a href="/runs" class="{% if active=='runs' %}on{% endif %}">Runs</a>
+    <a href="/reports" class="{% if active=='reports' %}on{% endif %}">Reports</a>
+    <a href="/settings" class="{% if active=='settings' %}on{% endif %}">Settings</a>
+  </nav>
+  <form action="/run" method="post"><button class="run-btn" type="submit">▶ Run now</button></form>
+</header>
+<main>
+{% block content %}{% endblock %}
+</main>
+<footer>Sentinel · defensive security automation · <a href="https://github.com/rawmware/security-automations-by-me">source</a></footer>
+</body>
+</html>
