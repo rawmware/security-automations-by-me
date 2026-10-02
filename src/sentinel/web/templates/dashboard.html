@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% set active='dash' %}
+{% block title %}— Dashboard{% endblock %}
+{% block content %}
+<div class="grid stats">
+  {% for sev in ['CRITICAL','HIGH','MEDIUM','LOW','INFO'] %}
+  <a class="stat sev-{{sev}}" href="/findings?severity={{sev}}">
+    <span class="num">{{ stats.by_severity[sev] }}</span>
+    <span class="lbl">{{ sev }}</span>
+  </a>
+  {% endfor %}
+  <div class="stat neutral"><span class="num">{{ stats.runs_completed }}</span><span class="lbl">RUNS</span></div>
+</div>
+
+{% if sched.next_run_in %}
+<p class="muted">Next scheduled run in ~{{ (sched.next_run_in // 60) }}m {{ (sched.next_run_in % 60) }}s
+{% if stats.last_run %} · last run {{ stats.last_run.finished_at }}{% endif %}</p>
+{% elif stats.last_run %}
+<p class="muted">Last run {{ stats.last_run.run_id }} finished {{ stats.last_run.finished_at }}</p>
+{% else %}
+<p class="muted">No runs yet — hit <b>Run now</b> to start the first pass.</p>
+{% endif %}
+
+<h2>Automations</h2>
+<div class="grid cards">
+{% for a in automations %}
+  <a class="card" href="/automations/{{ a.name }}">
+    <div class="card-top">
+      <span class="dot {% if a.enabled %}on{% else %}off{% endif %}"></span>
+      <b>{{ a.title }}</b>
+      <span class="count">{{ a.total }} findings</span>
+    </div>
+    <p class="muted">{{ a.tagline }}</p>
+    <p class="tiny">{{ a.threat }}</p>
+  </a>
+{% endfor %}
+</div>
+
+<h2>Latest findings</h2>
+{% if recent %}
+<table>
+  <tr><th>Severity</th><th>Finding</th><th>Automation</th><th>Observed</th></tr>
+  {% for f in recent %}
+  <tr>
+    <td><span class="badge sev-{{ f.severity }}">{{ f.severity }}</span></td>
+    <td><a href="/findings/{{ f.id }}">{{ f.title }}</a></td>
+    <td class="mono">{{ f.automation }}</td>
+    <td class="muted">{{ f.observed_at[:19] }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p class="muted">No findings recorded yet.</p>
+{% endif %}
+{% endblock %}
