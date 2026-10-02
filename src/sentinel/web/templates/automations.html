@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% set active='autos' %}
+{% block title %}— Automations{% endblock %}
+{% block content %}
+<h1>Automations</h1>
+<p class="muted">Six detection engines. Each runs on the schedule, writes findings here, and ships alerts to your channels.</p>
+<div class="grid cards">
+{% for a in automations %}
+  <a class="card" href="/automations/{{ a.name }}">
+    <div class="card-top">
+      <span class="dot {% if a.enabled %}on{% else %}off{% endif %}"></span>
+      <b>{{ a.title }}</b>
+      <span class="count">{{ a.total }}</span>
+    </div>
+    <p class="muted">{{ a.tagline }}</p>
+    <p class="tiny">Hunts: {{ a.threat }}</p>
+    <p class="tiny mono">{{ a.sec_plus }}</p>
+  </a>
+{% endfor %}
+</div>
+{% endblock %}
