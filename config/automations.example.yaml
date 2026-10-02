@@ -1,0 +1,81 @@
+# Sentinel example configuration.
+# Copy to automations.yaml and edit:  cp config/automations.example.yaml config/automations.yaml
+# Any ${VAR} is expanded from the environment — put secrets in .env, never here.
+#
+# Scheduling: run `sentinel run --loop` (uses interval_minutes), or trigger
+# `sentinel run` from cron / systemd timer (see docs/operations.md).
+
+version: 1
+
+# Where automation state (baselines, offsets, dedupe) is persisted.
+state_dir: ./state
+# Where reports and the SIEM-shippable events.jsonl land.
+reports_dir: ./reports
+events_jsonl: ./reports/events.jsonl
+
+# Daemon mode only (`sentinel run --loop`).
+interval_minutes: 60
+
+notifications:
+  dedupe_hours: 24          # same finding alerts once per 24h while it persists
+  stdout:
+    enabled: true
+    min_severity: INFO
+  discord:
+    enabled: false
+    webhook_url: ${DISCORD_WEBHOOK_URL}
+    min_severity: MEDIUM
+  slack:
+    enabled: false
+    webhook_url: ${SLACK_WEBHOOK_URL}
+    min_severity: MEDIUM
+  email:
+    enabled: false
+    smtp_host: ${SMTP_HOST}
+    smtp_port: ${SMTP_PORT}
+    smtp_user: ${SMTP_USER}
+    smtp_pass: ${SMTP_PASS}
+    from: ${SMTP_FROM}
+    to: ${ALERT_EMAIL_TO}
+    min_severity: HIGH
+
+automations:
+  typo_watch:
+    enabled: true
+    domains:
+      - example.com            # <-- your domains here
+    max_candidates: 1500       # cap on generated lookalikes per domain
+    check_ct_logs: true        # query crt.sh Certificate Transparency logs
+    min_severity: LOW
+
+  dns_sentinel:
+    enabled: true
+    domains:
+      - example.com
+
+  tls_watch:
+    enabled: true
+    hosts:
+      - { host: example.com, port: 443 }
+
+  port_watch:
+    enabled: true
+    timeout_seconds: 3
+    check_abuse_watchlist: true  # also probe commonly-abused ports
+    hosts:
+      - host: example.com
+        expected_open: [80, 443]  # <-- declare YOUR intended attack surface
+        also_check: [22]
+
+  auth_watch:
+    enabled: true
+    log_path: /var/log/auth.log  # /var/log/secure on RHEL-family
+    window_minutes: 15
+    threshold: 10                # failures from one IP inside the window
+
+  url_intel:
+    enabled: true
+    unshorten: true
+    urlscan_lookup: true
+    min_severity: LOW
+    urls: []                     # feed suspicious URLs here, or drive via API
