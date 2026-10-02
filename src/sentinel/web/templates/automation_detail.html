@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% set active='autos' %}
+{% block title %}— {{ info.title }}{% endblock %}
+{% block content %}
+<p><a href="/automations">← all automations</a></p>
+<div class="auto-head">
+  <h1>{{ info.title }}</h1>
+  <form action="/automations/{{ name }}/toggle" method="post">
+    <input type="hidden" name="enabled" value="{% if enabled %}off{% else %}on{% endif %}">
+    <button class="toggle {% if enabled %}on{% else %}off{% endif %}" type="submit">
+      {% if enabled %}● Enabled{% else %}○ Disabled{% endif %}
+    </button>
+  </form>
+</div>
+<p class="muted">{{ info.tagline }}</p>
+<p><b>Hunts:</b> {{ info.threat }}<br><b>Maps to:</b> <span class="mono">{{ info.sec_plus }}</span></p>
+
+<h2>How it works</h2>
+<ol class="how">
+{% for step in info.how %}
+  <li>{{ step }}</li>
+{% endfor %}
+</ol>
+
+<h2>Current configuration</h2>
+<pre class="evidence">{{ config }}</pre>
+
+<h2>Recent findings ({{ recent|length }})</h2>
+{% if recent %}
+<table>
+  <tr><th>Severity</th><th>Finding</th><th>Observed</th></tr>
+  {% for f in recent %}
+  <tr>
+    <td><span class="badge sev-{{ f.severity }}">{{ f.severity }}</span></td>
+    <td><a href="/findings/{{ f.id }}">{{ f.title }}</a></td>
+    <td class="muted">{{ f.observed_at[:19] }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p class="muted">No findings from this automation yet.</p>
+{% endif %}
+{% endblock %}
