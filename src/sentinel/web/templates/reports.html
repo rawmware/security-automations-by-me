@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% set active='reports' %}
+{% block title %}— Reports{% endblock %}
+{% block content %}
+<h1>Reports</h1>
+<p class="muted">A Markdown + HTML report is generated after every run.</p>
+<table>
+  <tr><th>Report</th><th>Size</th><th>Generated</th></tr>
+  {% for r in reports %}
+  <tr>
+    <td><a href="/reports/{{ r.name }}">{{ r.name }}</a></td>
+    <td class="muted">{{ r.size }} bytes</td>
+    <td class="muted">{{ r.mtime[:19] }}</td>
+  </tr>
+  {% else %}
+  <tr><td colspan="3" class="muted">No reports yet — run the engine first.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}
