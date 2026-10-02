@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% set active='settings' %}
+{% block title %}— Settings{% endblock %}
+{% block content %}
+<h1>Settings</h1>
+<p class="muted">Live configuration (secrets redacted). Edit <span class="mono">config/automations.yaml</span> and the next run picks it up — no restart needed. Automation toggles on the Automations pages apply immediately.</p>
+<pre class="evidence">{{ config_yaml }}</pre>
+{% endblock %}
