@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% set active='runs' %}
+{% block title %}— Runs{% endblock %}
+{% block content %}
+<h1>Runs</h1>
+<p class="muted">Every scheduled or manual pass, with per-severity counts. Findings are also appended to <span class="mono">events.jsonl</span> for SIEM ingestion.</p>
+<table>
+  <tr><th>Run</th><th>Finished</th><th>Status</th><th>Total</th><th>By severity</th></tr>
+  {% for r in runs %}
+  <tr>
+    <td class="mono">{{ r.run_id }}</td>
+    <td class="muted">{{ (r.finished_at or r.started_at)[:19] }}</td>
+    <td>{{ r.status }}</td>
+    <td>{{ r.findings_total }}</td>
+    <td class="mono tiny">
+      {% for sev, n in r.by_severity.items() %}<span class="badge sev-{{sev}}">{{sev}}:{{n}}</span> {% endfor %}
+    </td>
+  </tr>
+  {% else %}
+  <tr><td colspan="5" class="muted">No runs yet.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}
