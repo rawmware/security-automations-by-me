@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sentinel-secops"
+version = "1.0.0"
+description = "Defensive security automation toolkit: continuous monitoring, detection, alerting, and reporting."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Roman's Proposal" }]
+keywords = ["security", "automation", "monitoring", "defense", "secops"]
+dependencies = [
+    "pyyaml>=6.0",
+    "requests>=2.31",
+    "dnspython>=2.4",
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+    "jinja2>=3.1",
+    "python-multipart>=0.0.9",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: System Administrators",
+    "Topic :: Security",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+[project.scripts]
+sentinel = "sentinel.cli:main"
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.4", "httpx>=0.27"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+# BLE001: broad excepts are deliberate — a failed DNS/HTTP probe must never
+# crash a monitoring pass. Each site logs the failure.
+ignore = ["BLE001"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
